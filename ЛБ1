@@ -1,0 +1,17 @@
+using System;
+namespace Calculation
+{
+    class Program
+    {
+        static void Main()
+        {
+            Console.WriteLine("Введiть перше число:");
+            int a = int.Parse(Console.ReadLine());
+            Console.WriteLine("Введiть друге число:");
+            int b = int.Parse(Console.ReadLine());
+            int c = a % b;
+            Console.WriteLine($"Залишок вiд дiлення {a} на {b} рiвний {c}");
+            Console.ReadLine();
+        }
+    }
+}
