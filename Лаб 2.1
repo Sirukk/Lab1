@@ -1,0 +1,29 @@
+using System;
+
+public class Product
+{
+public string Name { get; set; }
+    public double Price { get; set; }
+
+    public Product(string name, double price)
+    {
+        Name = name;
+        Price = price;
+    }
+
+    public void DisplayInfo()
+    {
+        Console.WriteLine($"Назва продукту: {Name}");
+        Console.WriteLine($"Цiна: {Price:F2} грн");
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        Product product = new Product("Ноутбук", 34999);
+
+        product.DisplayInfo();
+    }
+}
