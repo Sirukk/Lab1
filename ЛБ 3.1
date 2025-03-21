@@ -1,0 +1,24 @@
+using System;
+
+public class Car
+{
+    public int Speed { get; set; }
+
+    public Car()
+    {
+        Speed = 90; 
+    }
+
+    public void S()
+    {
+        Console.WriteLine($"Швидкiсть автомобiля: {Speed} км/год");
+    }
+}
+class Program
+{
+    static void Main()
+    {
+        Car C = new Car();
+        C.S();
+    }
+}
