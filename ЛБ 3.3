@@ -1,0 +1,29 @@
+using System;
+
+public class Counter
+{
+    private static int count = 0;
+
+    public static void Increment()
+    {
+        count++;
+    }
+
+    public static void Print()
+    {
+        Console.WriteLine($"Значення лiчильника: {count}");
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        Counter.Print();
+        Counter.Increment();
+        Counter.Print();
+        Counter.Increment();
+        Counter.Increment();
+        Counter.Print();
+    }
+}
