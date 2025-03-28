@@ -1,0 +1,101 @@
+using System;
+
+class Program
+{
+    static void Main()
+    {
+        try
+        {
+            RegularAccount account1 = new RegularAccount(12345, "1234", 1000);
+            Console.WriteLine("Зняття коштiв з рахунку:");
+            account1.Withdraw(2000);
+            account1.Withdraw(1500);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Помилка: " + ex.Message);
+        }
+    }
+}
+
+class Bank
+{
+    public string Name { get; set; }
+    public Bank(string name) => Name = name;
+}
+
+class Account
+{
+    public int Number { get; set; }
+    public string PinCode { get; set; }
+    private double balance;
+
+    public double Balance
+    {
+        get => balance;
+        protected set
+        {
+            if (value < 0)
+                throw new Exception($"Неможливо створити рахунок - некоректний залишок: {value}");
+            balance = value;
+        }
+    }
+
+    public Account(int number, string pin, double balance)
+    {
+        Number = number;
+        PinCode = pin;
+        Balance = balance;
+    }
+
+    public virtual void Withdraw(double amount)
+    {
+        if (amount < 0 || amount > Balance)
+            throw new Exception("Недостатньо коштiв або некоректна сума для зняття.");
+        Balance -= amount;
+        Console.WriteLine($"Знято {amount}. Баланс: {Balance}");
+    }
+}
+
+class RegularAccount : Account
+{
+    public RegularAccount(int number, string pin, double balance) : base(number, pin, balance) { }
+    public override void Withdraw(double amount)
+    {
+        try
+        {
+            base.Withdraw(amount);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Помилка при зняттi коштiв: " + ex.Message);
+        }
+    }
+}
+
+class PrivilegedAccount : Account
+{
+    public PrivilegedAccount(int number, string pin, double balance) : base(number, pin, balance) { }
+    public override void Withdraw(double amount)
+    {
+        try
+        {
+            base.Withdraw(amount);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Помилка при зняттi коштiв: " + ex.Message);
+        }
+    }
+}
+
+class ATM
+{
+    public int Id { get; set; }
+    public string Address { get; set; }
+    public ATM(int id, string address)
+    {
+        Id = id;
+        Address = address;
+    }
+}
