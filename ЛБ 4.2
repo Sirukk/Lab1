@@ -1,0 +1,143 @@
+using System;
+
+class Program
+{
+    static void Main()
+    {
+        Console.WriteLine("Система рiвнянь з двома невiдомими:");
+        System2x2 system2 = new System2x2();
+        system2.GenerateRandomCoefficients();
+        system2.PrintSystem();
+        double[] solution2 = system2.Solve();
+        system2.PrintSolution(solution2);
+
+        Console.WriteLine("\nСистема рiвнянь з трьома невiдомими:");
+        System3x3 system3 = new System3x3();
+        system3.GenerateRandomCoefficients();
+        system3.PrintSystem();
+        double[] solution3 = system3.Solve();
+        system3.PrintSolution(solution3);
+    }
+}
+
+abstract class TSystemLinearEquation
+{
+    protected double[,] coefficients;
+    protected double[] results;
+
+    public abstract double[] Solve();
+
+    public abstract void GenerateRandomCoefficients();
+
+    public virtual void PrintSystem()
+    {
+        int equations = coefficients.GetLength(0);
+        int variables = coefficients.GetLength(1);
+        for (int i = 0; i < equations; i++)
+        {
+            for (int j = 0; j < variables; j++)
+            {
+                Console.Write($"{(coefficients[i, j] >= 0 && j > 0 ? "+" : "")}{coefficients[i, j]}x{j + 1}");
+            }
+            Console.WriteLine($"={results[i]}");
+        }
+    }
+
+    public void PrintSolution(double[] solution)
+    {
+        if (solution == null)
+        {
+            Console.WriteLine("Система не має розв’язку або має нескiнченну кiлькiсть розв’язків.");
+            return;
+        }
+        for (int i = 0; i < solution.Length; i++)
+        {
+            Console.WriteLine($"x{i + 1}={solution[i]:F2}");
+        }
+    }
+}
+
+class System2x2 : TSystemLinearEquation
+{
+    public System2x2()
+    {
+        coefficients = new double[2, 2];
+        results = new double[2];
+    }
+
+    public override void GenerateRandomCoefficients()
+    {
+        Random rand = new Random();
+        for (int i = 0; i < 2; i++)
+        {
+            for (int j = 0; j < 2; j++)
+            {
+                coefficients[i, j] = rand.Next(-10, 11);
+            }
+            results[i] = rand.Next(-10, 11);
+        }
+    }
+
+    public override double[] Solve()
+    {
+        double a1 = coefficients[0, 0], b1 = coefficients[0, 1], c1 = results[0];
+        double a2 = coefficients[1, 0], b2 = coefficients[1, 1], c2 = results[1];
+
+        double determinant = a1 * b2 - a2 * b1;
+
+        if (determinant == 0)
+            return null;
+
+        double x1 = (c1 * b2 - c2 * b1) / determinant;
+        double x2 = (a1 * c2 - a2 * c1) / determinant;
+
+        return new double[] { x1, x2 };
+    }
+}
+
+class System3x3 : TSystemLinearEquation
+{
+    public System3x3()
+    {
+        coefficients = new double[3, 3];
+        results = new double[3];
+    }
+
+    public override void GenerateRandomCoefficients()
+    {
+        Random rand = new Random();
+        for (int i = 0; i < 3; i++)
+        {
+            for (int j = 0; j < 3; j++)
+            {
+                coefficients[i, j] = rand.Next(-10, 11);
+            }
+            results[i] = rand.Next(-10, 11);
+        }
+    }
+
+    private double Determinant(double[,] matrix)
+    {
+        return matrix[0, 0] * (matrix[1, 1] * matrix[2, 2] - matrix[1, 2] * matrix[2, 1]) -
+               matrix[0, 1] * (matrix[1, 0] * matrix[2, 2] - matrix[1, 2] * matrix[2, 0]) +
+               matrix[0, 2] * (matrix[1, 0] * matrix[2, 1] - matrix[1, 1] * matrix[2, 0]);
+    }
+
+    public override double[] Solve()
+    {
+        double[,] A = coefficients;
+        double[] B = results;
+
+        double detA = Determinant(A);
+        if (detA == 0)
+            return null;
+
+        double[,] A1 = { { B[0], A[0, 1], A[0, 2] }, { B[1], A[1, 1], A[1, 2] }, { B[2], A[2, 1], A[2, 2] } };
+        double[,] A2 = { { A[0, 0], B[0], A[0, 2] }, { A[1, 0], B[1], A[1, 2] }, { A[2, 0], B[2], A[2, 2] } };
+        double[,] A3 = { { A[0, 0], A[0, 1], B[0] }, { A[1, 0], A[1, 1], B[1] }, { A[2, 0], A[2, 1], B[2] } };
+
+        double x1 = Determinant(A1) / detA, x2 = Determinant(A2) / detA, x3 = Determinant(A3) / detA;
+
+        return new double[] { x1, x2, x3 };
+    }
+}
