@@ -1,0 +1,136 @@
+using System;
+
+class Program
+{
+    static void Main()
+    {
+        try
+        {
+            Console.WriteLine("Створення рахунку з балансом 1000 грн...");
+            RegularAccount account1 = new RegularAccount(12345, "1234", 1000);
+
+            Console.WriteLine("\n Правильне зняття коштiв (200 грн):");
+            account1.Withdraw(200); 
+
+            Console.WriteLine("\n Спроба зняти бiльше, нiж є на рахунку (1500 грн):");
+            account1.Withdraw(1500); 
+
+            Console.WriteLine("\n Спроба зняти вiд’ємну суму (-100 грн):");
+            account1.Withdraw(-100); 
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Глобальна помилка: " + ex.Message);
+        }
+
+        try
+        {
+            Console.WriteLine("\n Спроба створити рахунок iз вiд’ємним балансом (-500 грн):");
+            RegularAccount invalidAccount = new RegularAccount(54321, "5678", -500);
+        }
+        catch (ZalyshokNaRahunkuException ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+    }
+}
+
+class ZnyatyZRahunkuException : Exception
+{
+    public ZnyatyZRahunkuException(string message) : base(message) { }
+}
+
+class ZalyshokNaRahunkuException : Exception
+{
+    public ZalyshokNaRahunkuException(double balance)
+        : base($" Неможливо створити рахунок - зазначено некоректне значення залишку на рахунку: {balance}") { }
+}
+
+class Bank
+{
+    public string Name { get; set; }
+    public Bank(string name) => Name = name;
+}
+
+class Account
+{
+    public int Number { get; set; }
+    public string PinCode { get; set; }
+    private double balance;
+
+    public double Balance
+    {
+        get => balance;
+        protected set
+        {
+            if (value < 0)
+                throw new ZalyshokNaRahunkuException(value);
+            balance = value;
+        }
+    }
+
+    public Account(int number, string pin, double balance)
+    {
+        Number = number;
+        PinCode = pin;
+        Balance = balance;
+    }
+
+    public virtual void Withdraw(double amount)
+    {
+        if (amount < 0)
+            throw new ZnyatyZRahunkuException(" Неможливо зняти вiд’ємну суму.");
+
+        if (amount > Balance)
+            throw new ZnyatyZRahunkuException(" Недостатньо коштiв на рахунку.");
+
+        Balance -= amount;
+        Console.WriteLine($" Успiшно знято {amount} грн. Новий баланс: {Balance} грн.");
+    }
+}
+
+class RegularAccount : Account
+{
+    public RegularAccount(int number, string pin, double balance) : base(number, pin, balance) { }
+
+    public override void Withdraw(double amount)
+    {
+        try
+        {
+            base.Withdraw(amount);
+        }
+        catch (ZnyatyZRahunkuException ex)
+        {
+            Console.WriteLine(" Помилка при зняттi коштiв: " + ex.Message);
+        }
+    }
+}
+
+class PrivilegedAccount : Account
+{
+    public PrivilegedAccount(int number, string pin, double balance) : base(number, pin, balance) { }
+
+    public override void Withdraw(double amount)
+    {
+        try
+        {
+            base.Withdraw(amount);
+        }
+        catch (ZnyatyZRahunkuException ex)
+        {
+            Console.WriteLine(" Помилка при зняттi коштiв: " + ex.Message);
+        }
+    }
+}
+
+class ATM
+{
+    public int Id { get; set; }
+    public string Address { get; set; }
+
+    public ATM(int id, string address)
+    {
+        Id = id;
+        Address = address;
+    }
+}
