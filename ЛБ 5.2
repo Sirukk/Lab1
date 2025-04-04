@@ -1,0 +1,84 @@
+using System;
+
+interface Printable
+{
+    void Print();
+}
+
+class Book : Printable
+{
+    public string Title { get; set; }
+
+    public Book(string title)
+    {
+        Title = title;
+    }
+
+    public void Print()
+    {
+        Console.WriteLine($"Книга: {Title}");
+    }
+
+    public static void PrintBooks(Printable[] printable)
+    {
+        Console.WriteLine("\nСписок книг:");
+        foreach (var item in printable)
+        {
+            if (item is Book book)
+            {
+                Console.WriteLine(book.Title);
+            }
+        }
+    }
+}
+
+class Magazine : Printable
+{
+    public string Title { get; set; }
+
+    public Magazine(string title)
+    {
+        Title = title;
+    }
+
+    public void Print()
+    {
+        Console.WriteLine($"Журнал: {Title}");
+    }
+
+    public static void PrintMagazines(Printable[] printable)
+    {
+        Console.WriteLine("\nСписок журналiв:");
+        foreach (var item in printable)
+        {
+            if (item is Magazine magazine)
+            {
+                Console.WriteLine(magazine.Title);
+            }
+        }
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        Printable[] items = new Printable[]
+        {
+            new Book("Хiмiя смертi"),
+            new Magazine("Vogue Ukrain"),
+            new Book("Гаррi Поттер"),
+            new Magazine("Telegraf"),
+            new Book("Список запрошених")
+        };
+
+        Console.WriteLine("Усi друкованi видання:");
+        foreach (var item in items)
+        {
+            item.Print();
+        }
+
+        Book.PrintBooks(items);
+        Magazine.PrintMagazines(items);
+    }
+}
