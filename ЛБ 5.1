@@ -1,0 +1,82 @@
+using System;
+using System.Collections.Generic;
+
+interface IFigure
+{
+    void PrintType();
+    void PrintArea();
+    void PrintDiagonal();
+    double A { get; set; }
+    double B { get; set; }
+}
+
+interface IColoredFigure : IFigure
+{
+    string Color { get; set; }
+    void PrintColor();
+}
+
+class Rectangle : IFigure
+{
+    public double A { get; set; }
+    public double B { get; set; }
+
+    public Rectangle(double a, double b)
+    {
+        A = a;
+        B = b;
+    }
+
+    public void PrintType() => Console.WriteLine("Фiгура: Прямокутник");
+    public void PrintArea() => Console.WriteLine($"Площа: {A * B}");
+    public void PrintDiagonal() => Console.WriteLine($"Довжина дiагоналi: {Math.Sqrt(A * A + B * B):F2}");
+}
+
+class ColoredRectangle : Rectangle, IColoredFigure
+{
+    public string Color { get; set; }
+
+    public ColoredRectangle(double a, double b, string color)
+        : base(a, b) => Color = color;
+
+    public void PrintColor() => Console.WriteLine($"Колiр: {Color}");
+}
+
+class Program
+{
+    static void DravIn3D(params IColoredFigure[] figures)
+    {
+        foreach (var fig in figures)
+        {
+            fig.PrintType();
+            fig.PrintColor();
+            fig.PrintArea();
+            fig.PrintDiagonal();
+        }
+    }
+
+    static List<IColoredFigure> GetColoredFigures(List<IFigure> figures)
+    {
+        List<IColoredFigure> coloredFigures = new();
+        foreach (var figure in figures)
+            if (figure is IColoredFigure coloredFigure)
+                coloredFigures.Add(coloredFigure);
+        return coloredFigures;
+    }
+
+    static void Main()
+    {
+        IFigure[] figures = {
+            new Rectangle(3, 4),
+            new Rectangle(5, 6),
+            new Rectangle(7, 8),
+            new ColoredRectangle(2, 3, "Червоний"),
+            new ColoredRectangle(4, 5, "Синiй"),
+            new ColoredRectangle(6, 7, "Зелений")
+        };
+
+        List<IColoredFigure> coloredFigures = GetColoredFigures(new List<IFigure>(figures));
+        Console.WriteLine("ФIГУРИ:");
+        DravIn3D(coloredFigures.ToArray());
+    }
+}
