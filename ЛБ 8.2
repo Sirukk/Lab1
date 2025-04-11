@@ -1,0 +1,60 @@
+using System;
+using System.IO;
+using System.Collections.Generic;
+namespace OOP_Lab_Task10
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            string inputPath = @"D:\OOP_lab08\f.txt";
+            string outputPath = @"D:\OOP_lab08\g.txt";
+            try
+            {
+                if (!File.Exists(inputPath))
+                {
+                    Console.WriteLine("Файл f.txt не знайдено");
+                    return;
+                }
+                List<int> numbers = new List<int>();
+                foreach (string line in File.ReadAllLines(inputPath))
+                {
+                    foreach (string part in line.Split(new[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries))
+                    {
+                        if (int.TryParse(part, out int num))
+                            numbers.Add(num);
+                    }
+                }
+                List<string> outputLines = new List<string>();
+                outputLines.Add("Парні числа:");
+                foreach (int n in numbers)
+                {
+                    if (n % 2 == 0)
+                        outputLines.Add(n.ToString());
+                }
+                outputLines.Add("\nДіляться на 3, але не на 7:");
+                foreach (int n in numbers)
+                {
+                    if (n % 3 == 0 && n % 7 != 0)
+                        outputLines.Add(n.ToString());
+                }
+                outputLines.Add("\nТочні квадрати:");
+                foreach (int n in numbers)
+                {
+                    if (n >= 0 && IsPerfectSquare(n))
+                        outputLines.Add(n.ToString());
+                }
+                File.WriteAllLines(outputPath, outputLines);
+                Console.WriteLine("Дані записано у файл g.txt");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Помилка: " + ex.Message);
+            }
+        }
+        static bool IsPerfectSquare(int n)
+        {
+            int root = (int)Math.Sqrt(n);
+            return root * root == n;
+        }
+    }
+}
