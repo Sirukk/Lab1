@@ -1,0 +1,78 @@
+using System;
+using System.IO;
+
+namespace OOP_Lab08
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            string group = "KN1-B23";          
+            string surname = "Siruk";   
+
+            string basePath = @"D:\OOP_lab08";
+            string groupPath = Path.Combine(basePath, group);
+            string surnamePath = Path.Combine(basePath, surname);
+            string sourcesPath = Path.Combine(basePath, "Sources");
+            string reportsPath = Path.Combine(basePath, "Reports");
+            string textsPath = Path.Combine(basePath, "Texts");
+
+            try
+            {
+                Directory.CreateDirectory(basePath);
+
+                Directory.CreateDirectory(groupPath);
+                Directory.CreateDirectory(surnamePath);
+                Directory.CreateDirectory(sourcesPath);
+                Directory.CreateDirectory(reportsPath);
+                Directory.CreateDirectory(textsPath);
+
+                CopyDirectory(sourcesPath, Path.Combine(surnamePath, "Sources"));
+                CopyDirectory(reportsPath, Path.Combine(surnamePath, "Reports"));
+                CopyDirectory(textsPath, Path.Combine(surnamePath, "Texts"));
+
+                string finalSurnamePath = Path.Combine(groupPath, surname);
+                if (Directory.Exists(finalSurnamePath))
+                {
+                    Directory.Delete(finalSurnamePath, true);
+                }
+                Directory.Move(surnamePath, finalSurnamePath);
+
+                DirectoryInfo dirInfo = new DirectoryInfo(textsPath);
+                string infoFile = Path.Combine(textsPath, "dirinfo.txt");
+                using (StreamWriter writer = new StreamWriter(infoFile, false))
+                {
+                    writer.WriteLine($"Назва каталогу: {dirInfo.Name}");
+                    writer.WriteLine($"Повний шлях: {dirInfo.FullName}");
+                    writer.WriteLine($"Дата створення: {dirInfo.CreationTime}");
+                    writer.WriteLine($"Кореневий каталог: {dirInfo.Root}");
+                }
+
+                Console.WriteLine("Усi файли створенi");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Сталася помилка: " + ex.Message);
+            }
+
+            Console.ReadKey();
+        }
+
+        static void CopyDirectory(string sourceDir, string destDir)
+        {
+            Directory.CreateDirectory(destDir);
+
+            foreach (string filePath in Directory.GetFiles(sourceDir))
+            {
+                string fileName = Path.GetFileName(filePath);
+                File.Copy(filePath, Path.Combine(destDir, fileName), true);
+            }
+
+            foreach (string dirPath in Directory.GetDirectories(sourceDir))
+            {
+                string dirName = Path.GetFileName(dirPath);
+                CopyDirectory(dirPath, Path.Combine(destDir, dirName));
+            }
+        }
+    }
+}
