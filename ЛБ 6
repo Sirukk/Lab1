@@ -1,0 +1,27 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+class Program
+{
+    static void Main()
+    {
+        List<int>[] collections = new List<int>[5];
+        collections[0] = new List<int> { 1, 2, 3 };
+        collections[1] = new List<int> { 4, 5 };
+        collections[2] = new List<int> { 6 };
+        collections[3] = new List<int> { 7, 8, 9, 10 };
+        collections[4] = new List<int> { 11, 12, 13 };
+
+        int targetSize = 3;
+
+        int count = collections.Count(c => c.Count == targetSize);
+        Console.WriteLine($"Кiлькiсть колекцiй розмiру {targetSize}: {count}");
+
+        var maxCollection = collections.OrderByDescending(c => c.Count).First();
+        Console.WriteLine($"Максимальна колекцiя (розмiр {maxCollection.Count}): {string.Join(", ", maxCollection)}");
+
+        var minCollection = collections.OrderBy(c => c.Count).First();
+        Console.WriteLine($"Мiнiмальна колекцiя (розмiр {minCollection.Count}): {string.Join(", ", minCollection)}");
+    }
+}
