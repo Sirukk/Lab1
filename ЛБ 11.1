@@ -1,0 +1,31 @@
+using System;
+
+class Program
+{
+    static void Main()
+    {
+        Console.Write("Початковий рядок (наприклад, 010101): ");
+        string input = Console.ReadLine();
+
+        Console.Write("Позицiя, з якої почати замiну: ");
+        int startIndex = int.Parse(Console.ReadLine());
+
+        if (startIndex < 0 || startIndex >= input.Length)
+        {
+            Console.WriteLine("Не правильно");
+            return;
+        }
+
+        char[] chars = input.ToCharArray();
+        for (int i = startIndex; i < chars.Length; i++)
+        {
+            if (chars[i] == '0')
+                chars[i] = '1';
+            else if (chars[i] == '1')
+                chars[i] = '0';
+        }
+
+        string result = new string(chars);
+        Console.WriteLine("Результат: " + result);
+    }
+}
