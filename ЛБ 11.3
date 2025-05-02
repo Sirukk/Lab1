@@ -1,0 +1,43 @@
+using System;
+using System.Globalization;
+
+class Program
+{
+    static void Main()
+    {
+        Console.WriteLine("Введiть три дати у форматi дд.мм.рррр, роздiленi комою:");
+        string input = Console.ReadLine();
+
+        string[] dateStrings = input.Split(',');
+        DateTime[] dates = new DateTime[3];
+
+        for (int i = 0; i < 3; i++)
+        {
+            if (!DateTime.TryParseExact(dateStrings[i].Trim(), "dd.MM.yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out dates[i]))
+            {
+                Console.WriteLine($"Невiрний формат дати: {dateStrings[i].Trim()}");
+                return;
+            }
+        }
+
+        int minYear = Math.Min(dates[0].Year, Math.Min(dates[1].Year, dates[2].Year));
+        Console.WriteLine($"a) Рiк з найменшим номером: {minYear}");
+
+        Console.WriteLine("b) Всi веснянi дати:");
+        foreach (DateTime date in dates)
+        {
+            if (date.Month >= 3 && date.Month <= 5)
+            {
+                Console.WriteLine(date.ToString("dd.MM.yyyy"));
+            }
+        }
+
+        DateTime maxDate = dates[0];
+        foreach (DateTime date in dates)
+        {
+            if (date > maxDate)
+                maxDate = date;
+        }
+        Console.WriteLine($"c) Найпiзнiша дата: {maxDate.ToString("dd.MM.yyyy")}");
+    }
+}
