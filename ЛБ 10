@@ -1,0 +1,54 @@
+using System;
+using System.Collections.Generic;
+public class Множина
+{
+    private HashSet<char> елементи;
+    public Множина()
+    {
+        елементи = new HashSet<char>();
+    }
+    public Множина(IEnumerable<char> символи)
+    {
+        елементи = new HashSet<char>(символи);
+    }
+    public static Множина operator +(Множина множина, char символ)
+    {
+        var результат = new Множина(множина.елементи);
+        результат.елементи.Add(символ);
+        return результат;
+    }
+    public static Множина operator *(Множина множ1, Множина множ2)
+    {
+        var результат = new Множина();
+        foreach (var символ in множ1.елементи)
+        {
+            if (множ2.елементи.Contains(символ))
+                результат.елементи.Add(символ);
+        }
+        return результат;
+    }
+    public static explicit operator int(Множина множина)
+    {
+        return множина.елементи.Count;
+    }
+    public override string ToString()
+    {
+        return "{" + string.Join(", ", елементи) + "}";
+    }
+}
+class Програма
+{
+    static void Main()
+    {
+        Множина множ1 = new Множина(new char[] { 'a', 'b', 'c' });
+        Множина множ2 = new Множина(new char[] { 'b', 'c', 'd' });
+        Console.WriteLine("Множина 1: " + множ1);
+        Console.WriteLine("Множина 2: " + множ2);
+        множ1 = множ1 + 'e';
+        Console.WriteLine("Множина 1 пiсля додавання 'e': " + множ1);
+        Множина перетин = множ1 * множ2;
+        Console.WriteLine("Перетин множин: " + перетин);
+        int потужність = (int)множ1;
+        Console.WriteLine("Потужнiсть множини 1: " + потужність);
+    }
+}
