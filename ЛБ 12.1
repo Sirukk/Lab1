@@ -1,0 +1,59 @@
+using System;
+using System.Linq;
+using System.Xml.Linq;
+using System.IO;
+
+class Program
+{
+    static void Main()
+    {
+        string fileName = "books.xml";
+
+        XDocument doc = new XDocument(
+            new XElement("books",
+                new XElement("book",
+                    new XElement("author", "Стiвен Кiнг"),
+                    new XElement("title", "Керрi"),
+                    new XElement("year", 1974)
+                ),
+                new XElement("book",
+                    new XElement("author", "Дж.К. Роулiнг"),
+                    new XElement("title", "Гаррi Поттер"),
+                    new XElement("year", 1997)
+                ),
+                new XElement("book",
+                    new XElement("author", "Гарпер Лi"),
+                    new XElement("title", "Убити пересмiшника"),
+                    new XElement("year", 1960)
+                )
+            )
+        );
+
+        doc.Save(fileName);
+        Console.WriteLine($" Файл '{fileName}' успiшно створено.\n");
+
+        try
+        {
+            XDocument loadedDoc = XDocument.Load(fileName);
+
+            var books = loadedDoc.Descendants("book")
+                                 .OrderByDescending(b => (int)b.Element("year"))
+                                 .Select(b => new
+                                 {
+                                     Title = b.Element("title")?.Value,
+                                     Year = b.Element("year")?.Value
+                                 });
+
+            Console.WriteLine("Книги, вiдсортованi за роком видання (спадання):\n");
+
+            foreach (var book in books)
+            {
+                Console.WriteLine($"Назва: {book.Title}, Рiк: {book.Year}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(" Помилка при обробцi XML: " + ex.Message);
+        }
+    }
+}
