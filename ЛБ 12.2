@@ -1,0 +1,48 @@
+using System;
+using System.Xml;
+using System.Xml.Linq;
+class Program
+{
+    static void Main()
+    {
+        string fileName = "books.xml";
+        XDocument doc = new XDocument(
+            new XElement("books",
+                new XElement("book",
+                    new XElement("author", "Стiвен Кiнг"),
+                    new XElement("title", "Керрi"),
+                    new XElement("year", 1974)
+                ),
+                new XElement("book",
+                    new XElement("author", "Дж.К. Роулiнг"),
+                    new XElement("title", "Гаррi Поттер"),
+                    new XElement("year", 1997)
+                ),
+                new XElement("book",
+                    new XElement("author", "Гарпер Лi"),
+                    new XElement("title", "Убити пересмiшника"),
+                    new XElement("year", 1960)
+                )
+            )
+        );
+        doc.Save(fileName);
+        Console.WriteLine($"Файл '{fileName}' створено.\n");
+        XmlDocument xmlDoc = new XmlDocument();
+        try
+        {
+            xmlDoc.Load(fileName);
+            XmlNodeList bookNodes = xmlDoc.GetElementsByTagName("book");
+            Console.WriteLine("Книги в документi:\n");
+            foreach (XmlNode book in bookNodes)
+            {
+                string title = book["title"]?.InnerText ?? "Невiдомо";
+                string year = book["year"]?.InnerText ?? "Рiк невідомий";
+                Console.WriteLine($"Назва: {title}, Рiк: {year}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Помилка при читаннi XML: " + ex.Message);
+        }
+    }
+}
