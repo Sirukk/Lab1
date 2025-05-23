@@ -1,0 +1,52 @@
+using System;
+
+namespace GraphicFactoryExample
+{
+    public interface IShape
+    {
+        void Draw();
+    }
+    public class Circle : IShape
+    {
+        public void Draw() => Console.WriteLine("Малюємо Круг");
+    }
+
+    public class Square : IShape
+    {
+        public void Draw() => Console.WriteLine("Малюємо Квадрат");
+    }
+
+    public class Triangle : IShape
+    {
+        public void Draw() => Console.WriteLine("Малюємо Трикутник");
+    }
+    public class ShapeFactory
+    {
+        public IShape CreateShape(string shapeType)
+        {
+            return shapeType.ToLower() switch
+            {
+                "круг" => new Circle(),
+                "квадрат" => new Square(),
+                "трикутник" => new Triangle(),
+                _ => throw new ArgumentException("Невідомий тип фігури")
+            };
+        }
+    }
+    class Program
+    {
+        static void Main()
+        {
+            ShapeFactory factory = new ShapeFactory();
+
+            IShape shape1 = factory.CreateShape("Круг");
+            shape1.Draw();
+
+            IShape shape2 = factory.CreateShape("Квадрат");
+            shape2.Draw();
+
+            IShape shape3 = factory.CreateShape("Трикутник");
+            shape3.Draw();
+        }
+    }
+}
