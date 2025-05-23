@@ -1,0 +1,42 @@
+using System;
+using System.Threading;
+
+namespace ThreadManagerExample
+{
+    public class ThreadManager
+    {
+        private static ThreadManager _instance;
+        private static readonly object _lock = new object();
+        private ThreadManager() { }
+
+        public static ThreadManager Instance
+        {
+            get
+            {
+                lock (_lock)
+                {
+                    if (_instance == null)
+                        _instance = new ThreadManager();
+                    return _instance;
+                }
+            }
+        }
+        public void RunThread(Action action)
+        {
+            Thread thread = new Thread(new ThreadStart(action));
+            thread.Start();
+        }
+    }
+    class Program
+    {
+        static void Main()
+        {
+            ThreadManager manager = ThreadManager.Instance;
+
+            manager.RunThread(() => Console.WriteLine($"Потік 1: {Thread.CurrentThread.ManagedThreadId}"));
+            manager.RunThread(() => Console.WriteLine($"Потік 2: {Thread.CurrentThread.ManagedThreadId}"));
+            manager.RunThread(() => Console.WriteLine($"Потік 3: {Thread.CurrentThread.ManagedThreadId}"));
+            Thread.Sleep(1000);
+        }
+    }
+}
